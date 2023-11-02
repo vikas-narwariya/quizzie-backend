@@ -3,7 +3,6 @@ const router = express.Router();
 const Question = require("../models/question");
 const authenticateUser = require("../middleware/authMiddleware");
 
-// Add a new question to a quiz
 router.post("/questions", authenticateUser, async (req, res) => {
   try {
     const { text, options, timer, quizId, selectedOption } = req.body;
@@ -22,8 +21,6 @@ router.post("/questions", authenticateUser, async (req, res) => {
     res.status(500).json({ error: "Question creation failed" });
   }
 });
-
-// Evaluate user's answer for a Q&A question and calculate score
 
 router.get("/questions/:quizId", async (req, res) => {
   try {
@@ -57,6 +54,40 @@ router.post("/questions/:questionId/evaluate", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: "Evaluation failed" });
+  }
+});
+
+// edit the questions
+router.put("/questions/:questionId", authenticateUser, async (req, res) => {
+  try {
+    const { text, options, timer, selectedOption } = req.body;
+    const userId = req.user._id;
+    const questionId = req.params.questionId; // Extract the questionId from the URL
+    const question = await Question.findOneAndUpdate(
+      {
+        _id: questionId,
+        userId, // Ensure that the question belongs to the authenticated user
+      },
+      {
+        $set: {
+          text,
+          options,
+          timer,
+          selectedOption,
+        },
+      },
+      { new: true } // Return the updated question
+    );
+
+    if (!question) {
+      return res
+        .status(404)
+        .json({ error: "Question not found or unauthorized" });
+    }
+
+    res.status(200).json(question);
+  } catch (error) {
+    res.status(500).json({ error: "Question update failed" });
   }
 });
 

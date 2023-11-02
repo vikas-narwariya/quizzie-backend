@@ -11,6 +11,7 @@ router.post("/quizzes", authenticateUser, async (req, res) => {
     const userId = req.user._id;
 
     const quiz = new Quiz({ title, type, userId });
+    //const shareLink = `http://localhost:3000/quiz/${quizId}`;
     await quiz.save();
     res.status(201).json(quiz);
   } catch (error) {
@@ -19,7 +20,7 @@ router.post("/quizzes", authenticateUser, async (req, res) => {
 });
 
 // Get all quizzes
-router.get("/quizzes", async (req, res) => {
+router.get("/quizzes", authenticateUser, async (req, res) => {
   try {
     const quizzes = await Quiz.find();
     res.status(200).json(quizzes);
@@ -103,6 +104,26 @@ router.post("/quizzes/check-answer", async (req, res) => {
   }
 
   res.status(200).json({ status: true, score });
+});
+
+router.delete("/quizzes/:quizId", authenticateUser, async (req, res) => {
+  try {
+    const quizId = req.params.quizId;
+    const userId = req.user._id; // Use _id of the user, not quizId
+
+    const quiz = await Quiz.findOne({ _id: quizId, userId });
+
+    if (!quiz) {
+      return res.status(404).json({ error: "Quiz not found" });
+    }
+
+    await Quiz.deleteOne({ _id: quizId }); // Use deleteOne to delete the quiz
+
+    res.status(204).send(); // No content response for successful deletion
+  } catch (error) {
+    console.error("Error deleting quiz:", error);
+    res.status(500).json({ error: "Quiz deletion failed" });
+  }
 });
 
 // Implement other quiz-related routes as needed

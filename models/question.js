@@ -17,7 +17,6 @@ const questionSchema = new mongoose.Schema({
   attempt: { type: Number, default: 0 },
   correct: { type: Number, default: 0 },
   incorrect: { type: Number, default: 0 },
-  // Add other question-related fields
 });
 
 module.exports = mongoose.model("Question", questionSchema);

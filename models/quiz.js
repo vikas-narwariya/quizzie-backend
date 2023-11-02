@@ -6,8 +6,6 @@ const quizSchema = new mongoose.Schema(
     impressionCount: { type: Number, default: 0 },
     type: { type: String, enum: ["Q&A", "Poll"], required: true },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-
-    // Add other quiz-related fields
   },
   { timestamps: true }
 );

@@ -5,7 +5,6 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true },
   password: { type: String, required: true },
   quizzes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Quiz" }],
-  // Add other user-related fields
 });
 
 module.exports = mongoose.model("User", userSchema);

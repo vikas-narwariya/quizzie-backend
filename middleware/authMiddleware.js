@@ -9,14 +9,14 @@ const authenticateUser = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, "abcdef"); // Use your secret key
+    const decoded = jwt.verify(token, "abcdef");
     const user = await User.findById(decoded.userId);
 
     if (!user) {
       return res.status(401).json({ error: "Unauthorized - Invalid token" });
     }
 
-    req.user = user; // Attach the user to the request
+    req.user = user;
     next();
   } catch (error) {
     res.status(500).json({ error: "Authentication failed" });
