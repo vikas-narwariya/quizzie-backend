@@ -5,20 +5,53 @@ const authenticateUser = require("../middleware/authMiddleware");
 
 router.post("/questions", authenticateUser, async (req, res) => {
   try {
-    const { text, options, timer, quizId, selectedOption } = req.body;
+    // const { text, options, timer, quizId, selectedOption } = req.body;
+    const { questions, quizId } = req.body;
     const userId = req.user._id;
-    const question = new Question({
-      text,
-      options,
-      timer,
-      selectedOption,
-      quizId,
-      userId,
-    });
-    await question.save();
-    res.status(201).json(question);
+
+    for (let i = 0; i < questions.length; i++) {
+      const question = questions[i];
+      const { questionText, options, intervalTime, selectedOption } = question;
+      await Question.create({
+        text: questionText,
+        options,
+        timer: intervalTime,
+        quizId,
+        userId,
+        selectedOption,
+      });
+    }
+
+    res.status(201).json({ status: "question created" });
   } catch (error) {
     res.status(500).json({ error: "Question creation failed" });
+  }
+});
+
+router.put("/questions", authenticateUser, async (req, res) => {
+  try {
+    // const { text, options, timer, quizId, selectedOption } = req.body;
+    const { questions, quizId } = req.body;
+    const userId = req.user._id;
+
+    await Question.deleteMany({ quizId });
+
+    for (let i = 0; i < questions.length; i++) {
+      const question = questions[i];
+      const { questionText, options, intervalTime, selectedOption } = question;
+      await Question.create({
+        text: questionText,
+        options,
+        timer: intervalTime,
+        quizId,
+        userId,
+        selectedOption,
+      });
+    }
+
+    res.status(201).json({ status: "question edited" });
+  } catch (error) {
+    res.status(500).json({ error: "Question edited failed" });
   }
 });
 

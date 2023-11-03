@@ -6,8 +6,8 @@ const questionSchema = new mongoose.Schema({
   quizId: { type: mongoose.Schema.Types.ObjectId, ref: "Quiz" },
   options: [
     {
-      text: String,
-      image: String,
+      optionText: String,
+      optionImage: String,
       isCorrect: Boolean,
       count: Number,
     },

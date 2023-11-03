@@ -19,9 +19,14 @@ mongoose
 
 app.use(bodyParser.json());
 
-// Use your routes
-
 app.use(cors());
+// app.use(function (req, res, next) {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//   res.setHeader("Access-Control-Allow-Credentials", true);
+//   next();
+// });
 app.use("/api", require("./routes/auth"));
 app.use("/api", require("./routes/stats"));
 app.use("/api", require("./routes/user"));
